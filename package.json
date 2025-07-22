@@ -14,7 +14,7 @@
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "ts": "node \\\n  --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' \\\n  src/main.cli.ts"
+    "ts": "node --loader ts-node/esm"
   },
   "devDependencies": {
     "@types/node": "18.17.17",
