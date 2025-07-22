@@ -21,5 +21,5 @@ export type RentSuggestion = {
   coords?: {
     latitude: number;
     longitude: number;
-  }
+  };
 }
