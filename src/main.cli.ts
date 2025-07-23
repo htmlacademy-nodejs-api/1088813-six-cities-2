@@ -1,13 +1,30 @@
 #!/usr/bin/env node
-import {CLIApplication, HelpCommand, ImportCommand, VersionCommand} from './cli/index.js';
+/* eslint-disable node/no-unsupported-features/es-syntax */
+import {CLIApplication} from './cli/index.js';
+import {glob} from 'glob';
+import {Command} from './cli/commands/command.interface.js';
+import {resolve} from 'node:path';
 
-function bootstrap() {
+async function bootstrap() {
   const cliApplication = new CLIApplication();
-  cliApplication.registerCommands([
-    new HelpCommand(),
-    new VersionCommand(),
-    new ImportCommand(),
-  ]);
+
+  const importedCommands: Command[] = [];
+  const files = glob.sync('src/cli/commands/*.command.ts');
+
+  for (const file of files) {
+    const modulePath = resolve(file);
+    const CommandClass = await import(modulePath);
+
+    for (const exportKey of Object.keys(CommandClass)) {
+      const ExportClass = CommandClass[exportKey];
+      if (ExportClass.prototype && typeof ExportClass.prototype.execute === 'function') {
+        const commandInstance = new ExportClass();
+        importedCommands.push(commandInstance);
+      }
+    }
+  }
+
+  cliApplication.registerCommands(importedCommands);
 
   cliApplication.processCommand(process.argv);
 }
