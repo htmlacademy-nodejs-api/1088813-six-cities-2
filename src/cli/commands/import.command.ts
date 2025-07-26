@@ -1,8 +1,7 @@
 import {Command} from './command.interface.js';
 import {TsvFileReader} from '../../shared/libs/file-reader/tsv-file-reader.js';
 import chalk from 'chalk';
-import {createSuggestion} from '../../shared/helpers/suggestion.js';
-import {getErrorMessage} from '../../shared/helpers/index.js';
+import {getErrorMessage, createSuggestion} from '../../shared/helpers/index.js';
 
 export class ImportCommand implements Command {
   public getName(): string {
