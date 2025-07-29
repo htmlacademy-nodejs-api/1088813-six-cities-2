@@ -5,8 +5,6 @@ import {Component} from '../shared/consts/index.js';
 import {DatabaseClient} from '../shared/libs/database-client/index.js';
 import {getMongoURI} from '../shared/helpers/index.js';
 import {RestSchema} from '../shared/libs/config/index.js';
-import {DefaultUserService} from '../shared/modules/user/index.js';
-import {UserType} from '../shared/enums/index.js';
 
 @injectable()
 export class RestApplication {
@@ -14,7 +12,6 @@ export class RestApplication {
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
-    @inject(Component.UserService) private readonly userService: DefaultUserService,
   ) {}
 
   private async initDb() {
@@ -35,17 +32,6 @@ export class RestApplication {
 
     this.logger.info('Init database...');
     await this.initDb();
-
-    const user = await this.userService.findOrCreate({
-      password: '123321',
-      avatar: 'img.jpeg',
-      email: 'kuzmich1994@test.ru',
-      firstName: 'Sergey',
-      lastName: 'Kuzmichev',
-      type: UserType.PRO,
-    }, this.config.get('SALT'));
-
-    console.log(user);
 
     this.logger.info('Init database completed');
   }
