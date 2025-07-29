@@ -1,6 +1,7 @@
 import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from '@typegoose/typegoose';
 import {ConvenienceType, SuggestionType} from '../../enums/index.js';
 import {UserEntity} from '../user/index.js';
+import {CoordinatesEntity} from '../coordinates/coordinates.entity.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface SuggestionEntity extends defaultClasses.Base {}
@@ -62,11 +63,8 @@ export class SuggestionEntity extends defaultClasses.TimeStamps {
   })
   public authorId: Ref<UserEntity>;
 
-  @prop({default: null})
-  public latitude?: number;
-
-  @prop({default: null})
-  public longitude?: number;
+  @prop({required: true, type: CoordinatesEntity})
+  public coordinates!: CoordinatesEntity;
 }
 
 export const SuggestionModel = getModelForClass(SuggestionEntity);
