@@ -2,7 +2,7 @@ import {SuggestionGenerator} from './suggestion-generator.interface.js';
 import {MockServerData} from '../../types/index.js';
 import {generateRandomNumber, getRandomItem, getRandomItems} from '../../helpers/index.js';
 import dayjs from 'dayjs';
-import {SuggestionGeneratorConstants} from '../../enums/suggestion-generator.js';
+import {SuggestionGeneratorConstants} from '../../enums/index.js';
 
 const FLAGS = [true, false];
 
@@ -28,12 +28,15 @@ export class TSVSuggestionGenerator implements SuggestionGenerator {
     const email = getRandomItem<string>(this.mockData.emails);
     const avatar = getRandomItem<string>(this.mockData.avatars);
     const commentsCount = generateRandomNumber(1, 500);
+    const coordinates = getRandomItem(this.mockData.coordinates);
 
     const createdDate = dayjs()
       .subtract(generateRandomNumber(SuggestionGeneratorConstants.MIN_VALUE, SuggestionGeneratorConstants.LAST_WEEK_DAY), 'day')
       .toISOString();
 
     const [firstName, lastName] = author.split(' ');
+
+    const [latitude, longitude] = coordinates.split(',');
 
     return [
       title,
@@ -55,6 +58,8 @@ export class TSVSuggestionGenerator implements SuggestionGenerator {
       email,
       avatar,
       commentsCount,
+      latitude,
+      longitude,
     ].join('\t');
   }
 }
