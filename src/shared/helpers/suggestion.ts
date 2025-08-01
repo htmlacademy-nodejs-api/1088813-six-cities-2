@@ -32,7 +32,7 @@ export function createSuggestion(suggestionData: string) {
     avatar,
   };
 
-  const coords = {
+  const coordinates = {
     latitude: Number.parseFloat(latitude),
     longitude: Number.parseFloat(longitude),
   };
@@ -54,6 +54,6 @@ export function createSuggestion(suggestionData: string) {
     conveniences: conveniences.split(';').map((convenience) => convenience as ConvenienceType),
     author: user,
     commentCount: Number.parseInt(commentsCount, 10),
-    coords,
+    coordinates,
   };
 }

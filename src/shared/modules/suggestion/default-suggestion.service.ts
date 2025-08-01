@@ -14,10 +14,7 @@ export class DefaultSuggestionService implements SuggestionService {
   ) {}
 
   public async createSuggestion(createSuggestionDto: CreateSuggestionDto): Promise<DocumentType<SuggestionEntity>> {
-    const suggestion = await this.suggestionModel.create({
-      ...createSuggestionDto,
-      coordinates: createSuggestionDto.coords,
-    });
+    const suggestion = await this.suggestionModel.create(createSuggestionDto);
     this.logger.info(`Suggestion created: ${suggestion.title}`);
 
     return suggestion;

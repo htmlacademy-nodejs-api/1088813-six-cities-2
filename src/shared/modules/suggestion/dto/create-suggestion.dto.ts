@@ -13,7 +13,7 @@ export class CreateSuggestionDto {
   public rentPrice: number;
   public conveniences: ConvenienceType[];
   public authorId: string;
-  public coords?: {
+  public coordinates?: {
     latitude: number;
     longitude: number;
   };
