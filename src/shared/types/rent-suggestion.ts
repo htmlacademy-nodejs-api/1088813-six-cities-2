@@ -18,7 +18,7 @@ export type RentSuggestion = {
   conveniences: ConvenienceType[];
   author: User;
   commentCount?: number;
-  coords?: {
+  coordinates?: {
     latitude: number;
     longitude: number;
   };

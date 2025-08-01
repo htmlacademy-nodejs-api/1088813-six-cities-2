@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable node/no-unsupported-features/es-syntax */
+import 'reflect-metadata';
 import {CLIApplication} from './cli/index.js';
 import {glob} from 'glob';
 import {Command} from './cli/commands/command.interface.js';
