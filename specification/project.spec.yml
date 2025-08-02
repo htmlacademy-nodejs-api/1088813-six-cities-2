@@ -1,0 +1,576 @@
+openapi: 3.1.0
+info:
+  title: API сервер для проекта six-cities
+  description: |-
+    * Список ресурсов и маршрутов для сервера six-cities
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: suggestions
+    description: Действия с предложениями по аренде.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя
+
+      requestBody:
+        description: Информация для создания нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует
+
+  /users/login:
+    get:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Возвращает информацию по авторизованному пользователю
+
+      requestBody:
+        description: Данные для логина (email и password)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+        required: true
+
+      responses:
+        "200":
+          description: Пользователь авторизован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "404":
+          description: Пользователь с таким email не зарегистрирован
+
+  /users/logout:
+    get:
+      tags:
+        - users
+      summary: Выход из учетной записи
+      description: Обеспечивает выход из учетной записи
+
+      responses:
+        "200":
+          description: Пользователь не авторизован. Булево значение
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+        "404":
+          description: Пользователь с таким email не зарегистрирован
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`
+
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      requestBody:
+        description: Изображение аватара
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/avatar'
+
+      responses:
+        "200":
+          description: Аватар изменен. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userWithAvatar'
+
+        "404":
+          description: Пользователь не найден
+
+  /suggestions/createSuggestion:
+    post:
+      tags:
+        - suggestions
+      summary: Создание предложения по аренде
+      description: Создает новое предложение по аренде
+
+      requestBody:
+        description: Информация для создания нового предложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createSuggestion'
+        required: true
+
+      responses:
+        "201":
+          description: Предложение создано. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/suggestion'
+
+        "400":
+          description: Не все обязательные поля заполнены
+
+  /suggestions/{id}/update:
+    put:
+      tags:
+        - suggestions
+      summary: Редактирование предложения по аренде
+      description: Обновляет предложение по аренде
+
+      requestBody:
+        description: Информация для редактирования предложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateSuggestion'
+
+      responses:
+        "200":
+          description: Предложение отредактировано. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/suggestion'
+
+        "404":
+          description: Предложение не найдено
+
+  /suggestions/{id}/delete:
+    delete:
+      tags:
+        - suggestions
+      summary: Удаление предложения по аренде
+      description: Удаляет предложение по аренде
+
+      responses:
+        "200":
+          description: Предложение удалено. Булево значение
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+        "404":
+          description: Предложение не найдено
+
+  /suggestions:
+    get:
+      tags:
+        - suggestions
+      summary: Получение списка предложений по аренде
+      description: Получает список предложений по аренде
+
+      responses:
+        "200":
+          description: Список предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/suggestion'
+
+  /suggestions/premium:
+    get:
+      tags:
+        - suggestions
+      summary: Получение списка премиальных предложений по аренде
+      description: Получает список премиальных предложений по аренде
+
+      responses:
+        "200":
+          description: Список премиальных предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/suggestion'
+
+  /suggestions/favourite:
+    get:
+      tags:
+        - suggestions
+      summary: Получение списка избранных предложений по аренде
+      description: Получает список избранных предложений по аренде
+
+      responses:
+        "200":
+          description: Список избранных предложений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/suggestion'
+
+  /suggestions/${id}:
+    get:
+      tags:
+        - suggestions
+      summary: Получение детальной информации о предложении.
+      description: Получение детальную информацию о предложении.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      responses:
+        "200":
+          description: Детальная информация о предложении. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/suggestion'
+        "404":
+          description: Предложение не найдено
+
+  /suggestions/${id}/favourite:
+    patch:
+      tags:
+        - suggestions
+      summary: Добавление/удаление предложения в/из избранное.
+      description: Добавляет/удаляет предложение в/из избранного.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      requestBody:
+        description: Информация об избранном
+        content:
+          application/json:
+            schema:
+              properties:
+                favourite:
+                  type: boolean
+                  example: true
+
+      responses:
+        "200":
+          description: Детальная информация о предложении. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/suggestion'
+        "404":
+          description: Предложение не найдено
+
+  /comments/{suggestionId}:
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев для предложения.
+      description: Получает список комментариев предложения по ID
+
+      parameters:
+        - name: suggestionId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      responses:
+        "200":
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/getComments'
+
+  /comments/{suggestionId}/addComment:
+    post:
+      tags:
+        - comments
+      summary: Добавление комментария для предложения.
+      description: Добавляет комментарий для предложения.
+
+      parameters:
+        - name: suggestionId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      requestBody:
+        description: Данные для создания комментария
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+
+      responses:
+        "200":
+          description: Объект комментария
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getComments'
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: example@mail.ru
+        firstName:
+          type: string
+          example: Sergey
+        lastName:
+          type: string
+          example: Kuzmichev
+        password:
+          type: string
+          example: 123456
+        type:
+          type: string
+          example: Обычный
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        email:
+          type: string
+          example: example@mail.ru
+
+    userWithAvatar:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        email:
+          type: string
+          example: example@mail.ru
+        avatar:
+          type: string
+          example: img.jpg
+
+    login:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: example@mail.ru
+        password:
+          type: string
+          example: 123456
+
+    avatar:
+      type: object
+
+      properties:
+        avatarPath:
+          type: string
+          example: img.jpg
+
+    createSuggestion:
+      type: object
+
+      properties:
+         title:
+           type: string
+           example: Suggestion
+         description:
+           type: string
+           example: Suggestion description
+         city:
+           type: string
+           example: Moscow
+         imagePreview:
+           type: string
+           example: img.jpg
+         imagesGallery:
+           type: string[]
+           example: ['img.jpg', 'img.jpg']
+         rating:
+           type: number
+           example: 2
+         suggestionType:
+           type: string
+           example: apartment
+         roomsCount:
+           type: number
+           example: 2
+         guestCount:
+           type: number
+           example: 2
+         rentPrice:
+           type: number
+           example: 100500
+         conveniences:
+           type: string[]
+           example: ['Breakfast', 'washer']
+         authorId:
+           type: string
+           example: 6329c3d6a04ab1061c6425ea
+         coordinates?:
+           type: object
+           example:
+             latitude:
+               type: number
+               example: 56.826417
+             longitude:
+               type: number
+               example: 56.826417
+
+    suggestion:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        title:
+          type: string
+          example: Suggestion
+        description:
+          type: string
+          example: Suggestion description
+        city:
+          type: string
+          example: Moscow
+        imagePreview:
+          type: string
+          example: img.jpg
+        imagesGallery:
+          type: string[]
+          example: [ 'img.jpg', 'img.jpg' ]
+        rating:
+          type: number
+          example: 2
+        suggestionType:
+          type: string
+          example: apartment
+        roomsCount:
+          type: number
+          example: 2
+        guestCount:
+          type: number
+          example: 2
+        rentPrice:
+          type: number
+          example: 100500
+        conveniences:
+          type: string[]
+          example: [ 'Breakfast', 'washer' ]
+        authorId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        commentsCount:
+          type: number
+          example: 20
+        favourite:
+          type: boolean
+          example: true
+        premium:
+          type: boolean
+          example: true
+        coordinates?:
+          type: object
+          example:
+            latitude:
+              type: number
+              example: 56.826417
+            longitude:
+              type: number
+              example: 56.826417
+
+    updateSuggestion:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Suggestion
+          description: Или другие поля относящиеся к предложению
+
+    getComments:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: comment content
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        suggestionId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: comment content
