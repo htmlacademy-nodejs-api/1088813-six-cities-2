@@ -6,7 +6,6 @@ export class CreateSuggestionDto {
   public city: string;
   public imagePreview: string;
   public imagesGallery: string[];
-  public rating: number;
   public suggestionType: SuggestionType;
   public roomsCount: number;
   public guestCount: number;

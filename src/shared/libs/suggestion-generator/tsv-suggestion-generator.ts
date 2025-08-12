@@ -19,7 +19,6 @@ export class TSVSuggestionGenerator implements SuggestionGenerator {
     const imagesGallery = getRandomItems<string>(this.mockData.imagesGallery).join(';');
     const premium = getRandomItem<boolean>(FLAGS);
     const favourite = getRandomItem<boolean>(FLAGS);
-    const rating = generateRandomNumber(SuggestionGeneratorConstants.MIN_VALUE, SuggestionGeneratorConstants.MAX_RATING);
     const roomsCount = generateRandomNumber(SuggestionGeneratorConstants.MIN_VALUE, SuggestionGeneratorConstants.MAX_ROOMS);
     const guestsCount = generateRandomNumber(SuggestionGeneratorConstants.MIN_VALUE, SuggestionGeneratorConstants.MAX_GUESTS);
     const rentPrice = generateRandomNumber(SuggestionGeneratorConstants.MIN_PRICE, SuggestionGeneratorConstants.MAX_PRICE);
@@ -48,7 +47,6 @@ export class TSVSuggestionGenerator implements SuggestionGenerator {
       imagesGallery,
       premium,
       favourite,
-      rating,
       roomsCount,
       guestsCount,
       rentPrice,
