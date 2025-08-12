@@ -1,10 +1,13 @@
 import {SuggestionService} from './suggestion-service.interface.js';
 import {inject, injectable} from 'inversify';
-import {Component} from '../../consts/index.js';
+import {Component, SortType} from '../../consts/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {SuggestionEntity} from './suggestion.entity.js';
 import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
+import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
+import {AGGREGATE_COMMENT} from './suggestion.constant.js';
+import {Types} from 'mongoose';
 
 @injectable()
 export class DefaultSuggestionService implements SuggestionService {
@@ -21,20 +24,88 @@ export class DefaultSuggestionService implements SuggestionService {
   }
 
   public async findById(id: string): Promise<DocumentType<SuggestionEntity> | null> {
-    const suggestion = await this.suggestionModel.findById(id);
-    if (suggestion) {
-      this.logger.info(`Suggestion found: ${suggestion.title}`);
-    } else {
-      this.logger.info('Suggestion not found');
-    }
+    const result = await this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        {
+          $match: { _id: new Types.ObjectId(id) },
+        },
+        ...AGGREGATE_COMMENT,
+      ])
+      .exec();
 
-    return suggestion;
+    return result[0] ?? null;
+  }
+
+  public async updateById(id: string, dto: UpdateSuggestionDto): Promise<DocumentType<SuggestionEntity> | null> {
+    await this.suggestionModel
+      .findByIdAndUpdate(id, dto)
+      .exec();
+
+    const result = await this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        {
+          $match: { _id: new Types.ObjectId(id) },
+        },
+        ...AGGREGATE_COMMENT,
+      ]).exec();
+
+    return result[0] ?? null;
+  }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.suggestionModel.exists({_id: documentId})) !== null;
+  }
+
+  public async deleteById(id: string): Promise<DocumentType<SuggestionEntity> | null> {
+    return this.suggestionModel.findByIdAndDelete(id).exec();
   }
 
   public async getAll(): Promise<DocumentType<SuggestionEntity>[]> {
-    const suggestions = await this.suggestionModel.find();
-    this.logger.info(`Suggestions found: ${suggestions.length}`);
+    return this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>(AGGREGATE_COMMENT)
+      .exec();
+  }
 
-    return suggestions;
+  public async findNew(count: number): Promise<DocumentType<SuggestionEntity>[]> {
+    return this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        ...AGGREGATE_COMMENT,
+        {
+          $sort: { createdAt: SortType.Down }
+        },
+        {
+          $limit: count,
+        }
+      ])
+      .exec();
+  }
+
+  public async findPremium(): Promise<DocumentType<SuggestionEntity>[]> {
+    return this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        ...AGGREGATE_COMMENT,
+        {
+          $match: { premium: true }
+        }
+      ])
+      .exec();
+  }
+
+  public async findFavourite(): Promise<DocumentType<SuggestionEntity>[]> {
+    return this.suggestionModel
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        ...AGGREGATE_COMMENT,
+        {
+          $match: { favourite: true }
+        }
+      ])
+      .exec();
+  }
+
+  public async incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null> {
+    return this.suggestionModel
+      .findByIdAndUpdate(id, { '$inc': {
+        commentCount: 1,
+      }}).exec();
   }
 }

@@ -39,9 +39,6 @@ export class SuggestionEntity extends defaultClasses.TimeStamps {
   @prop({required: true, default: false})
   public favourite: boolean;
 
-  @prop({required: true, default: null})
-  public rating: number;
-
   @prop({required: true, default: null, type: () => String, enum: SuggestionType})
   public suggestionType: SuggestionType;
 
@@ -56,6 +53,9 @@ export class SuggestionEntity extends defaultClasses.TimeStamps {
 
   @prop({required: true, default: []})
   public conveniences: ConvenienceType[];
+
+  @prop({default: 0})
+  public commentCount: number;
 
   @prop({
     ref: UserEntity,

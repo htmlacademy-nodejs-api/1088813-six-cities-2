@@ -5,6 +5,7 @@ import {Component} from './shared/consts/index.js';
 import {createRestApplicationContainer} from './rest/rest.container.js';
 import {createUserContainer} from './shared/modules/user/index.js';
 import {createSuggestionContainer} from './shared/modules/suggestion/suggestion.container.js';
+import {createCommentContainer} from './shared/modules/comment/index.js';
 
 async function bootstrap() {
   const appContainer = new Container();
@@ -13,6 +14,7 @@ async function bootstrap() {
     createRestApplicationContainer(),
     createUserContainer(),
     createSuggestionContainer(),
+    createCommentContainer(),
   );
 
   const application = appContainer.get<RestApplication>(Component.RestApplication);

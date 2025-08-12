@@ -10,7 +10,7 @@ export type RentSuggestion = {
   imagesGallery: string[];
   premium: boolean;
   favourite: boolean;
-  rating: number;
+  rating?: number;
   suggestionType: SuggestionType;
   roomsCount: number;
   guestCount: number;

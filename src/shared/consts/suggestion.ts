@@ -1,0 +1,1 @@
+export const DEFAULT_SUGGESTION_COUNT = 25;
