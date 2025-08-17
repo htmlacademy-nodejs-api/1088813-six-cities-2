@@ -21,7 +21,7 @@ export class SuggestionEntity extends defaultClasses.TimeStamps {
   @prop({required: true, default: null, trim: true})
   public description: string;
 
-  @prop({required: true, default: null})
+  @prop({default: null})
   public publishedDate: Date;
 
   @prop({required: true, default: null})

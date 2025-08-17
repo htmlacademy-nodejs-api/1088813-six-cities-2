@@ -20,7 +20,14 @@ export class DefaultSuggestionService implements SuggestionService {
     const suggestion = await this.suggestionModel.create(createSuggestionDto);
     this.logger.info(`Suggestion created: ${suggestion.title}`);
 
-    return suggestion;
+    const result = await this.suggestionModel.aggregate<types.DocumentType<SuggestionEntity>>([
+      {
+        $match: { _id: new Types.ObjectId(suggestion._id) },
+      },
+      ...AGGREGATE_COMMENT,
+    ]).exec();
+
+    return result[0];
   }
 
   public async findById(id: string): Promise<DocumentType<SuggestionEntity> | null> {
