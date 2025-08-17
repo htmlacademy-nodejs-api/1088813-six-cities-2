@@ -1,3 +1,6 @@
+import {ClassConstructor, plainToInstance} from 'class-transformer';
+import mongoose from 'mongoose';
+
 export function generateRandomNumber(min: number, max: number, numAfterDigit = 0) {
   return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
 }
@@ -15,4 +18,18 @@ export function getRandomItem<T>(items: T[]): T {
 
 export function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
+  return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
+}
+
+export function createErrorObject(message: string) {
+  return {
+    error: message,
+  };
+}
+
+export function isValidId(id: string): boolean {
+  return mongoose.Types.ObjectId.isValid(id);
 }

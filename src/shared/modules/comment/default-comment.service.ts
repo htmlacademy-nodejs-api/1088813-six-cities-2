@@ -5,7 +5,7 @@ import {Component} from '../../consts/index.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {CommentEntity} from './comment.entity.js';
 import {CreateCommentDto} from './dto/create-comment.dto.js';
-import mongoose from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 import {AGGREGATE_COMMENT} from './comment.constant.js';
 
 @injectable()
@@ -15,20 +15,26 @@ export class DefaultCommentService implements CommentService {
     @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
   ) {}
 
-  async addComment(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
+  public async addComment(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const newComment = await this.commentModel.create(dto);
     this.logger.info(`Comment created: ${newComment.text}`);
+    const result = await this.commentModel
+      .aggregate<types.DocumentType<CommentEntity>>([
+        {$match: {_id: new Types.ObjectId(newComment._id)},},
+        ...AGGREGATE_COMMENT,
+      ])
+      .exec();
 
-    return newComment;
+    return result[0];
   }
 
-  async getAllComments(): Promise<DocumentType<CommentEntity>[]> {
+  public async getAllComments(): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .aggregate<types.DocumentType<CommentEntity>>(AGGREGATE_COMMENT)
       .exec();
   }
 
-  async getAllCommentsBySuggestionId(suggestionId: string): Promise<DocumentType<CommentEntity>[]> {
+  public async getAllCommentsBySuggestionId(suggestionId: string): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .aggregate<types.DocumentType<CommentEntity>>([
         {

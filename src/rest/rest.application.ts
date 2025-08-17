@@ -5,20 +5,26 @@ import {Component} from '../shared/consts/index.js';
 import {DatabaseClient} from '../shared/libs/database-client/index.js';
 import {getMongoURI} from '../shared/helpers/index.js';
 import {RestSchema} from '../shared/libs/config/index.js';
-import {CommentService} from '../shared/modules/comment/index.js';
-import {SuggestionService} from '../shared/modules/suggestion/index.js';
+import express, {Express} from 'express';
+import {Controller, ExceptionFilter} from '../shared/libs/rest/index.js';
 
 @injectable()
 export class RestApplication {
+  private readonly server: Express;
+
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
-    @inject(Component.CommentService) private readonly commentService: CommentService,
-    @inject(Component.SuggestionService) private readonly suggestionService: SuggestionService,
-  ) {}
+    @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.UserController) private readonly userController: Controller,
+    @inject(Component.SuggestionController) private readonly suggestionController: Controller,
+    @inject(Component.CommentController) private readonly commentController: Controller,
+  ) {
+    this.server = express();
+  }
 
-  private async initDb() {
+  private async _initDb() {
     const mongoUri = getMongoURI(
       this.config.get('DB_USERNAME'),
       this.config.get('DB_PASSWORD'),
@@ -30,30 +36,47 @@ export class RestApplication {
     return this.databaseClient.connect(mongoUri);
   }
 
+  private async _initServer() {
+    const port = this.config.get('PORT');
+    this.server.listen(port);
+  }
+
+  private async _initControllers() {
+    this.server.use('/user', this.userController.router);
+    this.server.use('/suggestions', this.suggestionController.router);
+    this.server.use('/comments', this.commentController.router);
+  }
+
+  private async _initMiddleware() {
+    this.server.use(express.json());
+  }
+
+  private async _initExceptionFilter() {
+    this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
+  }
+
   public async init() {
     this.logger.info('RestApplication initialized');
     this.logger.info(`Get value from env $PORT ${this.config.get('PORT')}`);
 
     this.logger.info('Init database...');
-    await this.initDb();
-
+    await this._initDb();
     this.logger.info('Init database completed');
 
-    // const createResult = await this.commentService.addComment({
-    //   rating: 5,
-    //   authorId: '689a32d7e784e798712367bd',
-    //   suggestionId: '689a32d7e784e798712367d3',
-    //   text: 'Comment'
-    // });
+    this.logger.info('Init app-level middleware');
+    await this._initMiddleware();
+    this.logger.info('App-level middleware initialization completed');
 
-    const result = await this.commentService.getAllComments();
-    const resultS = await this.suggestionService.updateById('689a32d7e784e798712367bf', {
-      title: 'Домик в лесу 1234'
-    });
-    //
-    // console.log(createResult);
-    console.log(result);
-    console.log(resultS);
+    this.logger.info('Init controllers');
+    await this._initControllers();
+    this.logger.info('Controller initialization completed');
 
+    this.logger.info('Init exception filter');
+    await this._initExceptionFilter();
+    this.logger.info('Exception filters initialization completed');
+
+    this.logger.info('Try to init server...');
+    await this._initServer();
+    this.logger.info(`🚀 Server started on http://localhost:${this.config.get('PORT')}`);
   }
 }
