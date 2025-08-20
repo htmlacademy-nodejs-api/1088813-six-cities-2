@@ -10,21 +10,22 @@ POST http://localhost:3006/user
 Content-Type: application/json
 
 {
-  "email": "kuzMich1@mail.ru",
+  "email": "kuzMich199403@mail.ru",
   "password": "123456",
   "firstName": "Kuz",
   "lastName": "Mich",
-  "type": "pro"
+  "type": "pro",
+  "avatar": "image.jpeg"
 }
 
 ###
 
 ## Обноврение пользователя по id
-PUT http://localhost:3006/user/update/68a1a5d3c343392fc825864
+PUT http://localhost:3006/user/update/68a1a5d3c343392fc825864c
 Content-Type: application/json
 
 {
-  "email": "kuzMich1994@mail.ru"
+  "firstName": "Kuz"
 }
 
 ###

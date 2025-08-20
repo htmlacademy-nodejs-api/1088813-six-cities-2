@@ -7,3 +7,7 @@ export * from './exception-filter/exception-filter.interface.js';
 export * from './types/request-body.type.js';
 export * from './types/request.params.js';
 export * from './errors/index.js';
+export * from './middleware/middleware.interface.js';
+export * from './middleware/validate-object-id.middleware.js';
+export * from './middleware/validate-dto.middleware.js';
+export * from './middleware/document-exists.middleware.js';
