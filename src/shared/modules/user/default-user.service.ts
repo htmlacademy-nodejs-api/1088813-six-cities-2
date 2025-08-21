@@ -45,4 +45,12 @@ export class DefaultUserService implements UserService {
   public async updateById(id: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.userModel.exists({_id: documentId})) !== null;
+  }
+
+  public async userExistsByEmail(email:string): Promise<boolean> {
+    return (await this.userModel.exists({email})) !== null;
+  }
 }

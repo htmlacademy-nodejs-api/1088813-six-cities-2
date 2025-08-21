@@ -1,15 +1,23 @@
-import {BaseController, HttpError, HttpMethod} from '../../libs/rest/index.js';
+import {
+  BaseController, DocumentExistsMiddleware,
+  HttpError,
+  HttpMethod,
+  ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware
+} from '../../libs/rest/index.js';
 import {inject, injectable} from 'inversify';
 import {Component} from '../../consts/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {SuggestionService} from './suggestion-service.interface.js';
 import {NextFunction, Request, Response} from 'express';
-import {fillDTO, isValidId} from '../../helpers/index.js';
+import {fillDTO} from '../../helpers/index.js';
 import {SuggestionRdo} from './rdo/suggestion.rdo.js';
 import {CreateSuggestionRequest} from './create-suggestion-request.type.js';
 import {UpdateSuggestionRequest} from './update-suggestion-request.type.js';
 import {StatusCodes} from 'http-status-codes';
 import {DeleteSuggestionRequest} from './delete-suggestion-request.type.js';
+import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
+import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
 
 @injectable()
 export class SuggestionController extends BaseController {
@@ -22,10 +30,40 @@ export class SuggestionController extends BaseController {
     this.logger.info('Register routes for SuggestionController');
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
-    this.addRoute({path: '/update/:id', method: HttpMethod.Put, handler: this.update});
-    this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.delete});
-    this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.findById});
+    this.addRoute(
+      {path: '/',
+        method: HttpMethod.Post,
+        handler: this.create,
+        middlewares: [new ValidateDtoMiddleware(CreateSuggestionDto)],
+      });
+    this.addRoute({
+      path: '/update/:id',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new ValidateDtoMiddleware(UpdateSuggestionDto),
+        new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
+      ],
+    });
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
+      ],
+    });
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Get,
+      handler: this.findById,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
+      ],
+    });
     this.addRoute({path: '/findNew', method: HttpMethod.Get, handler: this.findNew});
     this.addRoute({path: '/findPremium', method: HttpMethod.Get, handler: this.findPremium});
     this.addRoute({path: '/findFavourite', method: HttpMethod.Get, handler: this.findFavourite});
@@ -46,51 +84,25 @@ export class SuggestionController extends BaseController {
   public async update({body, params}: UpdateSuggestionRequest<string>, res: Response): Promise<void> {
     const {id} = params;
 
-    if (isValidId(id)) {
-      const result = await this.suggestionService.updateById(id, body);
-      const responseData = fillDTO(SuggestionRdo, result);
-      this.ok(res, responseData);
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_FOUND,
-      `Suggestion with id ${id} not found`,
-      'SuggestionController',
-    );
+    const result = await this.suggestionService.updateById(id, body);
+    const responseData = fillDTO(SuggestionRdo, result);
+    this.ok(res, responseData);
   }
 
   public async delete({params}: DeleteSuggestionRequest<string>, res: Response): Promise<void> {
     const {id} = params;
 
-    if (isValidId(id)) {
-      const result = await this.suggestionService.deleteById(id);
-
-      const responseData = fillDTO(SuggestionRdo, result);
-      this.ok(res, responseData);
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_FOUND,
-      `Suggestion with id ${id} not found`,
-      'SuggestionController',
-    );
+    const result = await this.suggestionService.deleteById(id);
+    const responseData = fillDTO(SuggestionRdo, result);
+    this.ok(res, responseData);
   }
 
   public async findById({params}: DeleteSuggestionRequest<string>, res: Response): Promise<void> {
     const {id} = params;
 
-    if (isValidId(id)) {
-      const result = await this.suggestionService.findById(id);
-
-      const responseData = fillDTO(SuggestionRdo, result);
-      this.ok(res, responseData);
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_FOUND,
-      `Suggestion with id ${id} not found`,
-      'SuggestionController',
-    );
+    const result = await this.suggestionService.findById(id);
+    const responseData = fillDTO(SuggestionRdo, result);
+    this.ok(res, responseData);
   }
 
   public async findNew({query}: Request, res: Response): Promise<void> {

@@ -11,11 +11,16 @@ Content-Type: application/json
 
 {
   "title": "New Suggestion",
-  "description": "Description",
-  "city": "Moscow",
+  "description": "Description of Description",
+  "city": "Paris",
   "imagePreview": "img.jpeg",
+  "publishedDate": "2025-08-20T11:28:44.855Z",
   "imagesGallery": [
     "img.jpeg",
+    "img1.jpeg",
+    "img1.jpeg",
+    "img1.jpeg",
+    "img1.jpeg",
     "img1.jpeg"
   ],
   "suggestionType": "apartment",
@@ -36,23 +41,23 @@ Content-Type: application/json
 ###
 
 ## Редактирование предложения
-PUT http://localhost:3006/suggestions/update/68a1b61b6a3a40047fea5572
+PATCH http://localhost:3006/suggestions/update/689a32d7e784e798712367c3
 Content-Type: application/json
 
 {
-  "title": "New Suggestion 1234"
+  "title": "New suggestion of patch"
 }
 
 ###
 
 ## Удаление предложения
-DELETE http://localhost:3006/suggestions/68a1b61b6a3a40047fea5572
+DELETE http://localhost:3006/suggestions/689a32d7e784e798712367bf
 Content-Type: application/json
 
 ###
 
 ## Найти предложение по id
-GET http://localhost:3006/suggestions/68a1b5f0498bfb3cb3371160
+GET http://localhost:3006/suggestions/689a32d7e784e798712367c3
 Content-Type: application/json
 
 ###
