@@ -12,4 +12,5 @@ export interface UserService extends DocumentExists {
   updateById(id: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null>;
   exists(documentId: string): Promise<boolean>;
   userExistsByEmail?(email: string): Promise<boolean>;
+  addAvatar(id: string, avatarPath: string): Promise<DocumentType<UserEntity> | null>;
 }

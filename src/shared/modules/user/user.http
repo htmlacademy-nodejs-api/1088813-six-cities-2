@@ -38,3 +38,16 @@ Content-Type: application/json
   "email": "kuzMich1994@mail.ru",
   "password": "123456"
 }
+
+###
+
+## Загрузка аватара
+POST http://localhost:3006/user/68a0c728d3243d03dc52659a/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Type: image/png
+
+< /Users/sergejkuzmicev/Desktop/Снимок экрана 2025-03-07 в 13.08.44.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
