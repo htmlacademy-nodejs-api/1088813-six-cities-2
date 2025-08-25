@@ -1,5 +1,6 @@
 import {
-  BaseController, DocumentExistsMiddleware,
+  BaseController,
+  DocumentExistsMiddleware,
   HttpError,
   HttpMethod,
   ValidateDtoMiddleware,
@@ -21,6 +22,7 @@ import {CreateUserDto} from './dto/create-user.dto.js';
 import {UserExistsMiddleware} from './middleware/user-exists.middleware.js';
 import {LoginUserDto} from './dto/login-user.dto.js';
 import {UpdateUserDto} from './dto/update-user.dto.js';
+import {UploadFileMiddleware} from '../../libs/rest/middleware/upload-file.middleware.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -74,6 +76,16 @@ export class UserController extends BaseController {
       method: HttpMethod.Post,
       handler: this.findOrCreate,
       middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+    });
+    this.addRoute({
+      path: '/:id/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
+        new DocumentExistsMiddleware(this.userService, 'User', 'id'),
+      ]
     });
   }
 
@@ -134,5 +146,14 @@ export class UserController extends BaseController {
     const result = await this.userService.findOrCreate(body, this.config.get('SALT'));
 
     this.ok(res, fillDTO(UserRdo, result));
+  }
+
+  public async uploadAvatar(req: Request, res: Response): Promise<void> {
+    const result = await this.userService.addAvatar(req.params.id, req.file?.path || '');
+
+    this.created(res, {
+      filepath: req.file?.path,
+      user: result,
+    });
   }
 }

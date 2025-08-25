@@ -13,3 +13,5 @@ coverage
 .env
 .development.env
 .production.env
+
+/upload/

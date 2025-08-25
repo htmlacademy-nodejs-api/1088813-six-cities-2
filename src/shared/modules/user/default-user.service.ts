@@ -3,9 +3,10 @@ import {CreateUserDto} from './dto/create-user.dto.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {UserEntity} from './user.entity.js';
 import {inject, injectable} from 'inversify';
-import {Component} from '../../consts/index.js';
+import {AGGREGATE_USER, Component} from '../../consts/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {UpdateUserDto} from './dto/update-user.dto.js';
+import {Types} from 'mongoose';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -52,5 +53,19 @@ export class DefaultUserService implements UserService {
 
   public async userExistsByEmail(email:string): Promise<boolean> {
     return (await this.userModel.exists({email})) !== null;
+  }
+
+  public async addAvatar(id: string, avatarPath: string): Promise<DocumentType<UserEntity> | null> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, {avatar: avatarPath}, {new: true});
+    const result = await this.userModel.aggregate<types.DocumentType<UserEntity>>([
+      {
+        $match: { _id: new Types.ObjectId(updatedUser?._id) },
+      },
+      {
+        $project: {...AGGREGATE_USER },
+      }
+    ]).exec();
+
+    return result[0] ?? null;
   }
 }
