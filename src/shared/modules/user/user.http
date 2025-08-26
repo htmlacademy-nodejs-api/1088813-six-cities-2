@@ -41,6 +41,20 @@ Content-Type: application/json
 
 ###
 
+## Проверка Авторизации
+GET http://localhost:3006/user/login
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNzU3OSwiZXhwIjoxNzU2MjI4MTc5fQ.8ZlPslgvzyVCBL3buDb45oI1SX_Sgn1XqCbns9DzMhg
+
+###
+
+## Логаут
+GET http://localhost:3006/user/logout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNzU3OSwiZXhwIjoxNzU2MjI4MTc5fQ.8ZlPslgvzyVCBL3buDb45oI1SX_Sgn1XqCbns9DzMhg
+
+###
+
 ## Загрузка аватара
 POST http://localhost:3006/user/68a0c728d3243d03dc52659a/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW

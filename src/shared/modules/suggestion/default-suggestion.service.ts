@@ -98,13 +98,13 @@ export class DefaultSuggestionService implements SuggestionService {
       .exec();
   }
 
-  public async findFavourite(): Promise<DocumentType<SuggestionEntity>[]> {
+  public async findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]> {
     return this.suggestionModel
       .aggregate<types.DocumentType<SuggestionEntity>>([
-        ...AGGREGATE_COMMENT,
         {
-          $match: { favourite: true }
-        }
+          $match: { favourite: true, authorId: new Types.ObjectId(userId) },
+        },
+        ...AGGREGATE_COMMENT
       ])
       .exec();
   }

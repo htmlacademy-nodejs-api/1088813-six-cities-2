@@ -5,7 +5,7 @@ import {
   MinLength,
   ArrayMaxSize,
   ArrayMinSize,
-  IsNotEmpty, IsEnum, IsInt, Min, Max, IsArray, IsMongoId, ValidateNested, IsIn
+  IsNotEmpty, IsEnum, IsInt, Min, Max, IsArray, ValidateNested, IsIn
 } from 'class-validator';
 import {CreateSuggestionValidationMessage} from './create-suggestion.messages.js';
 import {CoordinatesDto} from '../../coordinates/index.js';
@@ -63,7 +63,6 @@ export class CreateSuggestionDto {
   @IsEnum(ConvenienceType, { each: true, message: CreateSuggestionValidationMessage.conveniences.invalid })
   public conveniences: ConvenienceType[];
 
-  @IsMongoId({ message: CreateSuggestionValidationMessage.authorId.invalidId })
   public authorId: string;
 
   @ValidateNested()

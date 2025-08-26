@@ -8,6 +8,7 @@ Content-Type: application/json
 ## Создание предложения
 POST http://localhost:3006/suggestions
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
 
 {
   "title": "New Suggestion",
@@ -35,7 +36,7 @@ Content-Type: application/json
     "latitude": 53.550341
   },
   "premium": false,
-  "authorId": "68a1a5d3c343392fc825864c"
+  "favourite": true
 }
 
 ###
@@ -43,6 +44,7 @@ Content-Type: application/json
 ## Редактирование предложения
 PATCH http://localhost:3006/suggestions/update/689a32d7e784e798712367c3
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyMjc3NSwiZXhwIjoxNzU2MjIzMzc1fQ.j8jM9q9xNgAX_XzRtDrh1Iv0ggiDX-7ptE6kjbRp_UE
 
 {
   "title": "New suggestion of patch"
@@ -51,13 +53,14 @@ Content-Type: application/json
 ###
 
 ## Удаление предложения
-DELETE http://localhost:3006/suggestions/689a32d7e784e798712367bf
+DELETE http://localhost:3006/suggestions/689a32d7e784e798712367c3
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
 
 ###
 
 ## Найти предложение по id
-GET http://localhost:3006/suggestions/689a32d7e784e798712367c3
+GET http://localhost:3006/suggestions/68adda8c69138fc08ecb77fa
 Content-Type: application/json
 
 ###
@@ -71,6 +74,7 @@ Content-Type: application/json
 ## Получение избранных предложений
 GET http://localhost:3006/suggestions/findFavourite
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
 
 ###
 

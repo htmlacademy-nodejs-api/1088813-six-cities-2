@@ -2,11 +2,11 @@
 ## Добавление комментария
 POST http://localhost:3006/comments
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyMjc3NSwiZXhwIjoxNzU2MjIzMzc1fQ.j8jM9q9xNgAX_XzRtDrh1Iv0ggiDX-7ptE6kjbRp_UE
 
 {
-  "text": "Comment 6",
+  "text": "Comment 123",
   "rating": 2,
-  "authorId": "68a1b6356a3a40047fea5579",
   "suggestionId": "689a32d7e784e798712367c3"
 }
 
