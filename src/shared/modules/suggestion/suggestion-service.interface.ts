@@ -13,6 +13,6 @@ export interface SuggestionService extends DocumentExists {
   exists(documentId: string): Promise<boolean>;
   findNew(count: number): Promise<DocumentType<SuggestionEntity>[]>;
   findPremium(): Promise<DocumentType<SuggestionEntity>[]>;
-  findFavourite(): Promise<DocumentType<SuggestionEntity>[]>;
+  findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]>;
   incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null>;
 }

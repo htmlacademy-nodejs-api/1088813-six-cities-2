@@ -6,7 +6,6 @@ export class CreateCommentDto {
   @IsNotEmpty({ message: CreateCommentMessages.text.required })
   public text: string;
 
-  @IsMongoId({ message: CreateCommentMessages.authorId.invalidId })
   public authorId: string;
 
   @Transform(({ value }) => parseInt(value, 10))

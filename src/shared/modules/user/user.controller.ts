@@ -1,7 +1,6 @@
 import {
   BaseController,
-  DocumentExistsMiddleware,
-  HttpError,
+  DocumentExistsMiddleware, HttpError,
   HttpMethod,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
@@ -13,7 +12,6 @@ import {Request, Response} from 'express';
 import {UserService} from './user-service.interface.js';
 import {fillDTO} from '../../helpers/index.js';
 import {UserRdo} from './rdo/user.rdo.js';
-import {StatusCodes} from 'http-status-codes';
 import {Config, RestSchema} from '../../libs/config/index.js';
 import {CreateUserRequest} from './create-user-request.type.js';
 import {LoginUserRequest} from './login-user-request.type.js';
@@ -23,18 +21,36 @@ import {UserExistsMiddleware} from './middleware/user-exists.middleware.js';
 import {LoginUserDto} from './dto/login-user.dto.js';
 import {UpdateUserDto} from './dto/update-user.dto.js';
 import {UploadFileMiddleware} from '../../libs/rest/middleware/upload-file.middleware.js';
+import {AuthService} from '../auth/index.js';
+import {LoggedUserRdo} from './rdo/logged-user.rdo.js';
+import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
+import {StatusCodes} from 'http-status-codes';
 
 @injectable()
 export class UserController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.UserService) private readonly userService: UserService,
-    @inject(Component.Config) private readonly config: Config<RestSchema>
+    @inject(Component.Config) private readonly config: Config<RestSchema>,
+    @inject(Component.AuthService) private readonly authService: AuthService,
   ) {
     super(logger);
 
     this.logger.info('Register routes for UserController');
 
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [
+        new ValidateDtoMiddleware(LoginUserDto),
+      ]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+    });
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Get,
@@ -54,18 +70,11 @@ export class UserController extends BaseController {
       ],
     });
     this.addRoute({
-      path: '/login',
-      method: HttpMethod.Post,
-      handler: this.login,
-      middlewares: [
-        new ValidateDtoMiddleware(LoginUserDto),
-      ]
-    });
-    this.addRoute({
       path: '/update/:id',
       method: HttpMethod.Put,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('id'),
         new ValidateDtoMiddleware(UpdateUserDto),
         new DocumentExistsMiddleware(this.userService, 'User', 'id'),
@@ -82,6 +91,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('id'),
         new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
         new DocumentExistsMiddleware(this.userService, 'User', 'id'),
@@ -105,41 +115,38 @@ export class UserController extends BaseController {
     this.created(res, fillDTO(UserRdo, result));
   }
 
-  public async login({body}: LoginUserRequest, _res: Response): Promise<void> {
-    const existUser = await this.userService.findByEmail(body.email);
+  public async login({body}: LoginUserRequest, res: Response): Promise<void> {
+    const user = await this.authService.verify(body);
+    const token = await this.authService.authenticate(user);
+    const responseData = fillDTO(LoggedUserRdo, {
+      user,
+      token,
+    });
 
-    if (!existUser) {
+    this.ok(res, responseData);
+  }
+
+  public async checkAuthenticate({ tokenPayload }: LoginUserRequest, res: Response): Promise<void> {
+    const foundedUser = await this.userService.findByEmail(tokenPayload.email);
+
+    if (!foundedUser) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        `User with email ${body.email} not found`,
+        'Unauthorized',
         'UserController',
       );
     }
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Method not implemented',
-      'UserController',
-    );
+    this.ok(res, fillDTO(UserRdo, foundedUser));
   }
 
   public async update(req: UpdateUserRequest<string>, res: Response): Promise<void> {
     const {body, params} = req;
     const {id} = params;
 
-    const existUser = await this.userService.findById(id);
+    const result = await this.userService.updateById(id, body);
 
-    if (existUser) {
-      const result = await this.userService.updateById(id, body);
-
-      this.ok(res, fillDTO(UserRdo, result));
-    }
-
-    throw new HttpError(
-      StatusCodes.NOT_FOUND,
-      `User with id ${id} not found`,
-      'UserController',
-    );
+    this.ok(res, fillDTO(UserRdo, result));
   }
 
   public async findOrCreate({body}: CreateUserRequest, res: Response): Promise<void> {

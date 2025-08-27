@@ -18,6 +18,7 @@ import {StatusCodes} from 'http-status-codes';
 import {DeleteSuggestionRequest} from './delete-suggestion-request.type.js';
 import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
 import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
+import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
 
 @injectable()
 export class SuggestionController extends BaseController {
@@ -34,24 +35,41 @@ export class SuggestionController extends BaseController {
       {path: '/',
         method: HttpMethod.Post,
         handler: this.create,
-        middlewares: [new ValidateDtoMiddleware(CreateSuggestionDto)],
+        middlewares: [
+          new PrivateRouteMiddleware(),
+          new ValidateDtoMiddleware(CreateSuggestionDto)
+        ],
       });
     this.addRoute({
       path: '/update/:id',
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
-        new ValidateObjectIdMiddleware('id'),
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('id', this.logger, 'update'),
         new ValidateDtoMiddleware(UpdateSuggestionDto),
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
       ],
+    });
+    this.addRoute({path: '/findNew', method: HttpMethod.Get, handler: this.findNew});
+    this.addRoute({
+      path: '/findPremium',
+      method: HttpMethod.Get,
+      handler: this.findPremium,
+    });
+    this.addRoute({
+      path: '/findFavourite',
+      method: HttpMethod.Get,
+      handler: this.findFavourite,
+      middlewares: [new PrivateRouteMiddleware()]
     });
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
-        new ValidateObjectIdMiddleware('id'),
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('id', this.logger, 'delete'),
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
       ],
     });
@@ -60,13 +78,10 @@ export class SuggestionController extends BaseController {
       method: HttpMethod.Get,
       handler: this.findById,
       middlewares: [
-        new ValidateObjectIdMiddleware('id'),
+        new ValidateObjectIdMiddleware('id', this.logger, 'get by id'),
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
       ],
     });
-    this.addRoute({path: '/findNew', method: HttpMethod.Get, handler: this.findNew});
-    this.addRoute({path: '/findPremium', method: HttpMethod.Get, handler: this.findPremium});
-    this.addRoute({path: '/findFavourite', method: HttpMethod.Get, handler: this.findFavourite});
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
@@ -75,8 +90,8 @@ export class SuggestionController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async create({body}: CreateSuggestionRequest, res: Response, _next: NextFunction): Promise<void> {
-    const result = await this.suggestionService.createSuggestion(body);
+  public async create({body, tokenPayload}: CreateSuggestionRequest, res: Response, _next: NextFunction): Promise<void> {
+    const result = await this.suggestionService.createSuggestion({...body, authorId: tokenPayload.id});
     const responseData = fillDTO(SuggestionRdo, result);
     this.created(res, responseData);
   }
@@ -123,8 +138,8 @@ export class SuggestionController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async findFavourite(_req: Request, res: Response): Promise<void> {
-    const result = await this.suggestionService.findFavourite();
+  public async findFavourite({tokenPayload}: Request, res: Response): Promise<void> {
+    const result = await this.suggestionService.findFavourite(tokenPayload.id);
     const responseData = fillDTO(SuggestionRdo, result);
     this.ok(res, responseData);
   }

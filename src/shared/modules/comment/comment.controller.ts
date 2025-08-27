@@ -14,6 +14,7 @@ import {fillDTO} from '../../helpers/index.js';
 import {Request, Response} from 'express';
 import {CommentRdo} from './rdo/comment.rdo.js';
 import {CreateCommentDto} from './dto/create-comment.dto.js';
+import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -31,6 +32,7 @@ export class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.index,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto),
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'suggestionId')
       ],
@@ -46,8 +48,8 @@ export class CommentController extends BaseController {
     });
   }
 
-  public async index({body}: CreateCommentRequest, res: Response): Promise<void> {
-    const result = await this.commentService.addComment(body);
+  public async index({body, tokenPayload}: CreateCommentRequest, res: Response): Promise<void> {
+    const result = await this.commentService.addComment({...body, authorId: tokenPayload.id});
     await this.suggestionService.incCommentCount(body.suggestionId);
     const responseData = fillDTO(CommentRdo, result);
     this.created(res, responseData);
