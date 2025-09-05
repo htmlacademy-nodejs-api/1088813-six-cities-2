@@ -4,8 +4,7 @@ import {CoordinatesRdo} from '../../coordinates/index.js';
 import {UserRdo} from '../../user/index.js';
 
 export class SuggestionRdo {
-  @Expose({name: '_id'})
-  @Transform(({value}) => value.toString())
+  @Expose()
   public id: string;
 
   @Expose()
@@ -55,4 +54,7 @@ export class SuggestionRdo {
 
   @Expose()
   public premium?: boolean;
+
+  @Expose()
+  public commentsCount?: number;
 }

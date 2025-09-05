@@ -10,12 +10,11 @@ POST http://localhost:3006/user
 Content-Type: application/json
 
 {
-  "email": "kuzMich199403@mail.ru",
+  "email": "kuzMich1994036@mail.ru",
   "password": "123456",
   "firstName": "Kuz",
   "lastName": "Mich",
-  "type": "pro",
-  "avatar": "image.jpeg"
+  "type": "pro"
 }
 
 ###
@@ -35,7 +34,7 @@ POST http://localhost:3006/user/login
 Content-Type: application/json
 
 {
-  "email": "kuzMich1994@mail.ru",
+  "email": "kuzMich1994035@mail.ru",
   "password": "123456"
 }
 

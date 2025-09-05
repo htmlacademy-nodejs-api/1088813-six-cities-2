@@ -6,7 +6,7 @@ import {DocumentType, types} from '@typegoose/typegoose';
 import {SuggestionEntity} from './suggestion.entity.js';
 import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
 import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
-import {AGGREGATE_COMMENT} from './suggestion.constant.js';
+import {AGGREGATE_COMMENT, SuggestionSettings} from './suggestion.constant.js';
 import {Types} from 'mongoose';
 
 @injectable()
@@ -67,9 +67,17 @@ export class DefaultSuggestionService implements SuggestionService {
     return this.suggestionModel.findByIdAndDelete(id).exec();
   }
 
-  public async getAll(): Promise<DocumentType<SuggestionEntity>[]> {
+  public async getAll(count = SuggestionSettings.MAX_SUGGESTIONS_COUNT): Promise<DocumentType<SuggestionEntity>[]> {
     return this.suggestionModel
-      .aggregate<types.DocumentType<SuggestionEntity>>(AGGREGATE_COMMENT)
+      .aggregate<types.DocumentType<SuggestionEntity>>([
+        ...AGGREGATE_COMMENT,
+        {
+          $sort: { createdAt: SortType.Down }
+        },
+        {
+          $limit: count,
+        }
+      ])
       .exec();
   }
 
@@ -114,5 +122,14 @@ export class DefaultSuggestionService implements SuggestionService {
       .findByIdAndUpdate(id, { '$inc': {
         commentCount: 1,
       }}).exec();
+  }
+
+  public async isAuthor(suggestionId:string, authorId:string): Promise<boolean> {
+    const suggestion = await this.suggestionModel.findById(suggestionId).select('authorId').lean();
+    if (!suggestion) {
+      return false;
+    }
+
+    return suggestion.authorId.toString() === authorId;
   }
 }

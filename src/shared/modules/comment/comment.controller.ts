@@ -10,7 +10,7 @@ import {Logger} from '../../libs/logger/index.js';
 import {CommentService} from './comment-service.interface.js';
 import {CreateCommentRequest} from './create-comment-request.type.js';
 import {SuggestionService} from '../suggestion/index.js';
-import {fillDTO} from '../../helpers/index.js';
+import {fillDTO, parseNumberPartialFromString} from '../../helpers/index.js';
 import {Request, Response} from 'express';
 import {CommentRdo} from './rdo/comment.rdo.js';
 import {CreateCommentDto} from './dto/create-comment.dto.js';
@@ -61,9 +61,11 @@ export class CommentController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async getAllBySuggestionId({params}: Request<RequestParams<string>>, res: Response): Promise<void> {
+  public async getAllBySuggestionId({params, query}: Request<RequestParams<string>>, res: Response): Promise<void> {
     const {suggestionId} = params;
-    const result = await this.commentService.getAllCommentsBySuggestionId(suggestionId);
+    const {count} = query;
+
+    const result = await this.commentService.getAllCommentsBySuggestionId(suggestionId, parseNumberPartialFromString(count as string));
     const responseData = fillDTO(CommentRdo, result);
     this.ok(res, responseData);
   }

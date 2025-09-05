@@ -34,3 +34,7 @@ export const AGGREGATE_COMMENT = [
     }
   }
 ];
+
+export enum CommentSettings {
+  MAX_COMMENTS_COUNT = 50,
+}

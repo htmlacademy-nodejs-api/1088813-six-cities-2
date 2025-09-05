@@ -43,3 +43,7 @@ export const AGGREGATE_COMMENT = [
     $unset: 'comments'
   }
 ];
+
+export enum SuggestionSettings {
+  MAX_SUGGESTIONS_COUNT = 60,
+}

@@ -10,7 +10,7 @@ import {Component} from '../../consts/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {SuggestionService} from './suggestion-service.interface.js';
 import {NextFunction, Request, Response} from 'express';
-import {fillDTO} from '../../helpers/index.js';
+import {fillDTO, parseNumberPartialFromString} from '../../helpers/index.js';
 import {SuggestionRdo} from './rdo/suggestion.rdo.js';
 import {CreateSuggestionRequest} from './create-suggestion-request.type.js';
 import {UpdateSuggestionRequest} from './update-suggestion-request.type.js';
@@ -51,7 +51,6 @@ export class SuggestionController extends BaseController {
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
       ],
     });
-    this.addRoute({path: '/findNew', method: HttpMethod.Get, handler: this.findNew});
     this.addRoute({
       path: '/findPremium',
       method: HttpMethod.Get,
@@ -84,8 +83,10 @@ export class SuggestionController extends BaseController {
     });
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const suggestions = await this.suggestionService.getAll();
+  public async index({query}: Request, res: Response): Promise<void> {
+    const {count} = query;
+
+    const suggestions = await this.suggestionService.getAll(parseNumberPartialFromString(count as string));
     const responseData = fillDTO(SuggestionRdo, suggestions);
     this.ok(res, responseData);
   }
@@ -96,8 +97,16 @@ export class SuggestionController extends BaseController {
     this.created(res, responseData);
   }
 
-  public async update({body, params}: UpdateSuggestionRequest<string>, res: Response): Promise<void> {
+  public async update({body, params, tokenPayload}: UpdateSuggestionRequest<string>, res: Response): Promise<void> {
     const {id} = params;
+
+    if (!await this.suggestionService.isAuthor(id, tokenPayload.id)) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        'Forbidden',
+        'SuggestionController'
+      );
+    }
 
     const result = await this.suggestionService.updateById(id, body);
     const responseData = fillDTO(SuggestionRdo, result);
@@ -116,24 +125,6 @@ export class SuggestionController extends BaseController {
     const {id} = params;
 
     const result = await this.suggestionService.findById(id);
-    const responseData = fillDTO(SuggestionRdo, result);
-    this.ok(res, responseData);
-  }
-
-  public async findNew({query}: Request, res: Response): Promise<void> {
-    const {count} = query;
-
-    if (!count) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        '{?count=} is required',
-        'SuggestionController',
-      );
-    }
-
-    const numberCount = Number.parseInt(count as string, 10);
-
-    const result = await this.suggestionService.findNew(numberCount);
     const responseData = fillDTO(SuggestionRdo, result);
     this.ok(res, responseData);
   }

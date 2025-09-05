@@ -1,12 +1,12 @@
 import {CommentService} from './comment-service.interface.js';
 import {Logger} from '../../libs/logger/index.js';
 import {inject, injectable} from 'inversify';
-import {Component} from '../../consts/index.js';
+import {Component, SortType} from '../../consts/index.js';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {CommentEntity} from './comment.entity.js';
 import {CreateCommentDto} from './dto/create-comment.dto.js';
 import mongoose, {Types} from 'mongoose';
-import {AGGREGATE_COMMENT} from './comment.constant.js';
+import {AGGREGATE_COMMENT, CommentSettings} from './comment.constant.js';
 
 @injectable()
 export class DefaultCommentService implements CommentService {
@@ -34,7 +34,7 @@ export class DefaultCommentService implements CommentService {
       .exec();
   }
 
-  public async getAllCommentsBySuggestionId(suggestionId: string): Promise<DocumentType<CommentEntity>[]> {
+  public async getAllCommentsBySuggestionId(suggestionId: string, count = CommentSettings.MAX_COMMENTS_COUNT): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .aggregate<types.DocumentType<CommentEntity>>([
         {
@@ -43,6 +43,12 @@ export class DefaultCommentService implements CommentService {
           },
         },
         ...AGGREGATE_COMMENT,
+        {
+          $sort: { createdAt: SortType.Down },
+        },
+        {
+          $limit: count,
+        }
       ])
       .exec();
   }

@@ -19,7 +19,7 @@ Content-Type: application/json
 ###
 
 ## Получить все комментарии по id предложения
-GET http://localhost:3006/comments/689a32d7e784e798712367c3
+GET http://localhost:3006/comments/68a1b5f0498bfb3cb3371160
 Content-Type: application/json
 
 ###

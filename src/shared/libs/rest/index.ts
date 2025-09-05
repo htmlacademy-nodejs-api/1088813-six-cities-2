@@ -1,5 +1,7 @@
 export * from './types/http-method.enum.js';
 export * from './types/route.interface.js';
+export * from './types/validation-error-field.type.js';
+export * from './types/application-error.enum.js';
 export * from './controller/controller.interface.js';
 export * from './controller/base-controller.abstract.js';
 export * from './constants/controller.constants.js';
@@ -11,3 +13,6 @@ export * from './middleware/middleware.interface.js';
 export * from './middleware/validate-object-id.middleware.js';
 export * from './middleware/validate-dto.middleware.js';
 export * from './middleware/document-exists.middleware.js';
+export * from './exception-filter/app.exception-filter.js';
+export * from './exception-filter/validation.exception-filter.js';
+export * from './exception-filter/http-error.exception-filter.js';
