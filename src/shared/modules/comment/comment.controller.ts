@@ -15,6 +15,7 @@ import {Request, Response} from 'express';
 import {CommentRdo} from './rdo/comment.rdo.js';
 import {CreateCommentDto} from './dto/create-comment.dto.js';
 import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
+import {PathTransformer} from '../../libs/rest/transform/path-transformer.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -22,8 +23,9 @@ export class CommentController extends BaseController {
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.CommentService) private commentService: CommentService,
     @inject(Component.SuggestionService) private suggestionService: SuggestionService,
+    @inject(Component.PathTransformer) pathTransformer: PathTransformer,
   ) {
-    super(logger);
+    super(logger, pathTransformer);
 
     this.logger.info('Register routes for CommentController');
 

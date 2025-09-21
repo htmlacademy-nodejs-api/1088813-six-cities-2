@@ -6,6 +6,7 @@ import {DatabaseClient} from '../shared/libs/database-client/index.js';
 import {getFullServerPath, getMongoURI} from '../shared/helpers/index.js';
 import {RestSchema} from '../shared/libs/config/index.js';
 import express, {Express} from 'express';
+import cors from 'cors';
 import {
   Controller,
   ExceptionFilter,
@@ -70,6 +71,7 @@ export class RestApplication {
       express.static(this.config.get('STATIC_DIRECTORY')),
     );
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    this.server.use(cors());
   }
 
   private async _initExceptionFilter() {

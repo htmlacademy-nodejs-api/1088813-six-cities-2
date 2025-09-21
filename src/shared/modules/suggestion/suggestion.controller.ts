@@ -19,14 +19,16 @@ import {DeleteSuggestionRequest} from './delete-suggestion-request.type.js';
 import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
 import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
 import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
+import {PathTransformer} from '../../libs/rest/transform/path-transformer.js';
 
 @injectable()
 export class SuggestionController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.SuggestionService) private readonly suggestionService: SuggestionService,
+    @inject(Component.PathTransformer) pathTransformer: PathTransformer,
   ) {
-    super(logger);
+    super(logger, pathTransformer);
 
     this.logger.info('Register routes for SuggestionController');
 

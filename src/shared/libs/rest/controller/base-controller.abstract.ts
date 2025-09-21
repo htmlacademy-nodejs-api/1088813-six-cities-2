@@ -12,11 +12,10 @@ import {PathTransformer} from '../transform/path-transformer.js';
 @injectable()
 export abstract class BaseController implements Controller {
   private readonly _router: Router;
-  @inject(Component.PathTransformer)
-  private readonly pathTransformer: PathTransformer;
 
   constructor(
     protected readonly logger: Logger,
+    @inject(Component.PathTransformer) private readonly pathTransformer: PathTransformer,
   ) {
     this._router = Router();
   }
@@ -36,8 +35,6 @@ export abstract class BaseController implements Controller {
   }
 
   public send<T>(res: Response, statusCode: number, data: T): void {
-    this.logger.info('PathTransformer instance:', this.pathTransformer);
-    this.logger.info('Execute method:', this.pathTransformer?.execute);
     const modifiedData = this.pathTransformer.execute(data as Record<string, unknown>);
     res
       .type(ContentTypes.DEFAULT_CONTENT_TYPE)
