@@ -54,6 +54,10 @@ export class ImportCommand implements Command {
     await this.suggestionService.createSuggestion({
       ...suggestion,
       authorId: user.id,
+      coordinates: {
+        latitude: Number(suggestion.coordinates?.latitude),
+        longitude: Number(suggestion.coordinates?.longitude),
+      },
     });
   }
 

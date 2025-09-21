@@ -42,9 +42,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwuc
 ###
 
 ## Редактирование предложения
-PATCH http://localhost:3006/suggestions/update/689a32d7e784e798712367c3
+PATCH http://localhost:3006/suggestions/update/689a32d7e784e798712367c9
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyMjc3NSwiZXhwIjoxNzU2MjIzMzc1fQ.j8jM9q9xNgAX_XzRtDrh1Iv0ggiDX-7ptE6kjbRp_UE
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1Njk3NDQwMiwiZXhwIjoxNzU2OTc1MDAyfQ.T3Wgll_ucEKH3gPm-hiy6rJ-cY7jtzvCwgnasMiQUdc
 
 {
   "title": "New suggestion of patch"
@@ -60,7 +60,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwuc
 ###
 
 ## Найти предложение по id
-GET http://localhost:3006/suggestions/68adda8c69138fc08ecb77fa
+GET http://localhost:3006/suggestions/689a32d7e784e798712367cf
 Content-Type: application/json
 
 ###

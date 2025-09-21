@@ -7,7 +7,7 @@ import {DocumentExists} from '../../types/document-exists.interface.js';
 export interface SuggestionService extends DocumentExists {
   createSuggestion(dto: CreateSuggestionDto): Promise<DocumentType<SuggestionEntity>>;
   findById(id: string): Promise<DocumentType<SuggestionEntity> | null>;
-  getAll(): Promise<DocumentType<SuggestionEntity>[]>;
+  getAll(count?: number): Promise<DocumentType<SuggestionEntity>[]>;
   updateById(id: string, dto: UpdateSuggestionDto): Promise<DocumentType<SuggestionEntity> | null>;
   deleteById(id: string): Promise<DocumentType<SuggestionEntity> | null>;
   exists(documentId: string): Promise<boolean>;
@@ -15,4 +15,5 @@ export interface SuggestionService extends DocumentExists {
   findPremium(): Promise<DocumentType<SuggestionEntity>[]>;
   findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]>;
   incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null>;
+  isAuthor(suggestionId: string, authorId: string): Promise<boolean>;
 }

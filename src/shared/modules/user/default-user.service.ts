@@ -7,6 +7,7 @@ import {AGGREGATE_USER, Component} from '../../consts/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {UpdateUserDto} from './dto/update-user.dto.js';
 import {Types} from 'mongoose';
+import {DEFAULT_AVATAR_FILE_NAME} from './user.constant.js';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -16,7 +17,7 @@ export class DefaultUserService implements UserService {
   ) {}
 
   public async createUser(createUserDto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity(createUserDto);
+    const user = new UserEntity({...createUserDto, avatar: DEFAULT_AVATAR_FILE_NAME});
     user.setPassword(createUserDto.password, salt);
 
     const result = this.userModel.create(user);

@@ -25,6 +25,7 @@ import {AuthService} from '../auth/index.js';
 import {LoggedUserRdo} from './rdo/logged-user.rdo.js';
 import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
 import {StatusCodes} from 'http-status-codes';
+import {PathTransformer} from '../../libs/rest/transform/path-transformer.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -33,8 +34,9 @@ export class UserController extends BaseController {
     @inject(Component.UserService) private readonly userService: UserService,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.AuthService) private readonly authService: AuthService,
+    @inject(Component.PathTransformer) pathTransformer: PathTransformer,
   ) {
-    super(logger);
+    super(logger, pathTransformer);
 
     this.logger.info('Register routes for UserController');
 

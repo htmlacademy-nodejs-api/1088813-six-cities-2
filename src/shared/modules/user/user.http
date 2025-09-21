@@ -10,22 +10,22 @@ POST http://localhost:3006/user
 Content-Type: application/json
 
 {
-  "email": "kuzMich199403@mail.ru",
+  "email": "kuzMich1994039@mail.ru",
   "password": "123456",
   "firstName": "Kuz",
   "lastName": "Mich",
-  "type": "pro",
-  "avatar": "image.jpeg"
+  "type": "pro"
 }
 
 ###
 
 ## Обноврение пользователя по id
-PUT http://localhost:3006/user/update/68a1a5d3c343392fc825864c
+PUT http://localhost:3006/user/update/68cfc239e826ca83801ae2b4
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDM5QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4Y2ZjMjM5ZTgyNmNhODM4MDFhZTJiNCIsImlhdCI6MTc1ODQ0NjE5OSwiZXhwIjoxNzU4NDQ2Nzk5fQ.PdjigqjWXKoZfohfkR1X30JWBIPAGD1VSVD5JXYOiKU
 
 {
-  "firstName": "Kuz"
+  "firstName": "Kuzz"
 }
 
 ###
@@ -35,7 +35,7 @@ POST http://localhost:3006/user/login
 Content-Type: application/json
 
 {
-  "email": "kuzMich1994@mail.ru",
+  "email": "kuzMich1994039@mail.ru",
   "password": "123456"
 }
 
@@ -44,7 +44,7 @@ Content-Type: application/json
 ## Проверка Авторизации
 GET http://localhost:3006/user/login
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNzU3OSwiZXhwIjoxNzU2MjI4MTc5fQ.8ZlPslgvzyVCBL3buDb45oI1SX_Sgn1XqCbns9DzMhg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDM5QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4Y2ZjMjM5ZTgyNmNhODM4MDFhZTJiNCIsImlhdCI6MTc1ODQ0NjE5OSwiZXhwIjoxNzU4NDQ2Nzk5fQ.PdjigqjWXKoZfohfkR1X30JWBIPAGD1VSVD5JXYOiKU
 
 ###
 
