@@ -30,7 +30,7 @@ export class CommentController extends BaseController {
     this.logger.info('Register routes for CommentController');
 
     this.addRoute({
-      path: '/',
+      path: '/addComment',
       method: HttpMethod.Post,
       handler: this.index,
       middlewares: [
@@ -39,7 +39,6 @@ export class CommentController extends BaseController {
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'suggestionId')
       ],
     });
-    this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
     this.addRoute({
       path: '/:suggestionId',
       method: HttpMethod.Get,
@@ -55,12 +54,6 @@ export class CommentController extends BaseController {
     await this.suggestionService.incCommentCount(body.suggestionId);
     const responseData = fillDTO(CommentRdo, result);
     this.created(res, responseData);
-  }
-
-  public async getAll(_req: Request, res: Response): Promise<void> {
-    const result = await this.commentService.getAllComments();
-    const responseData = fillDTO(CommentRdo, result);
-    this.ok(res, responseData);
   }
 
   public async getAllBySuggestionId({params, query}: Request<RequestParams<string>>, res: Response): Promise<void> {

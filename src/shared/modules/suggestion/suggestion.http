@@ -6,9 +6,9 @@ Content-Type: application/json
 ###
 
 ## Создание предложения
-POST http://localhost:3006/suggestions
+POST http://localhost:3006/suggestions/createSuggestion
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDM5QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXp6IiwibGFzdE5hbWUiOiJNaWNoIiwiaWQiOiI2OGNmYzIzOWU4MjZjYTgzODAxYWUyYjQiLCJpYXQiOjE3NTg3MTAxMzYsImV4cCI6MTc1ODcxMDczNn0.dNsKqEX9BBlr0qzyxj92PL5iwzXVmoroXi0Uw1_zHBw
 
 {
   "title": "New Suggestion",
@@ -36,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwuc
     "latitude": 53.550341
   },
   "premium": false,
-  "favourite": true
+  "favourite": false
 }
 
 ###
@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwuc
 ###
 
 ## Удаление предложения
-DELETE http://localhost:3006/suggestions/689a32d7e784e798712367c3
+DELETE http://localhost:3006/suggestions/689a32d7e784e798712367c3/delete
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
 
@@ -72,14 +72,26 @@ Content-Type: application/json
 ###
 
 ## Получение избранных предложений
-GET http://localhost:3006/suggestions/findFavourite
+GET http://localhost:3006/suggestions/favourite
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
+
+
+###
+
+## Добавление/удаление предложения из избранного
+PATCH http://localhost:3006/suggestions/68d3c98c4db244e966615afa/favourite
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDMxMEBtYWlsLnJ1IiwiZmlyc3ROYW1lIjoiS3V6IiwibGFzdE5hbWUiOiJNaWNoIiwiaWQiOiI2OGQzZmEyZDQ2MTg4NjIwYzQzZjUzMzAiLCJpYXQiOjE3NTg3ODU1MjQsImV4cCI6MTc1ODc4NjEyNH0.7ZHnjROZnPQJt5VePds-Ivf5kr_cDOKLHiEwavFzQjM
+
+{
+  "favourite": true
+}
 
 ###
 
 ## Получение премиальных предложений
-GET http://localhost:3006/suggestions/findPremium
+GET http://localhost:3006/suggestions/premium
 Content-Type: application/json
 
 ###

@@ -1,7 +1,7 @@
 import {
   BaseController, DocumentExistsMiddleware,
   HttpError,
-  HttpMethod,
+  HttpMethod, RequestBody, RequestParams,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
@@ -20,6 +20,7 @@ import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
 import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
 import {PrivateRouteMiddleware} from '../../libs/rest/middleware/private-route.middleware.js';
 import {PathTransformer} from '../../libs/rest/transform/path-transformer.js';
+import {ChangeFavouriteDto} from './dto/change-favourite.dto.js';
 
 @injectable()
 export class SuggestionController extends BaseController {
@@ -34,7 +35,7 @@ export class SuggestionController extends BaseController {
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
     this.addRoute(
-      {path: '/',
+      {path: '/createSuggestion',
         method: HttpMethod.Post,
         handler: this.create,
         middlewares: [
@@ -54,18 +55,18 @@ export class SuggestionController extends BaseController {
       ],
     });
     this.addRoute({
-      path: '/findPremium',
+      path: '/premium',
       method: HttpMethod.Get,
       handler: this.findPremium,
     });
     this.addRoute({
-      path: '/findFavourite',
+      path: '/favourite',
       method: HttpMethod.Get,
       handler: this.findFavourite,
       middlewares: [new PrivateRouteMiddleware()]
     });
     this.addRoute({
-      path: '/:id',
+      path: '/:id/delete',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
@@ -81,6 +82,17 @@ export class SuggestionController extends BaseController {
       middlewares: [
         new ValidateObjectIdMiddleware('id', this.logger, 'get by id'),
         new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
+      ],
+    });
+    this.addRoute({
+      path: '/:id/favourite',
+      method: HttpMethod.Patch,
+      handler: this.changeFavouriteStatus,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id', this.logger, 'get by id'),
+        new DocumentExistsMiddleware(this.suggestionService, 'Suggestion', 'id'),
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(ChangeFavouriteDto),
       ],
     });
   }
@@ -140,6 +152,15 @@ export class SuggestionController extends BaseController {
   public async findPremium(_req: Request, res: Response): Promise<void> {
     const result = await this.suggestionService.findPremium();
     const responseData = fillDTO(SuggestionRdo, result);
+    this.ok(res, responseData);
+  }
+
+  public async changeFavouriteStatus({params, body, tokenPayload}: Request<RequestParams<string>, RequestBody, ChangeFavouriteDto>, res: Response): Promise<void> {
+    const {id} = params;
+
+    const result = await this.suggestionService.changeFavouriteStatus(id, tokenPayload.id, body.favourite);
+    const responseData = fillDTO(SuggestionRdo, result);
+
     this.ok(res, responseData);
   }
 }

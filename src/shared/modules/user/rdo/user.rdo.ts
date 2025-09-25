@@ -2,7 +2,7 @@ import {Expose, Transform} from 'class-transformer';
 
 export class UserRdo {
   @Expose({name: '_id'})
-  @Transform(({value}) => value.toString())
+  @Transform(({ obj }) => obj._id.toString(), { toClassOnly: true })
   public id: string;
 
   @Expose()
@@ -16,4 +16,7 @@ export class UserRdo {
 
   @Expose()
   public avatar: string;
+
+  @Expose()
+  public favouriteSuggestions: unknown[];
 }

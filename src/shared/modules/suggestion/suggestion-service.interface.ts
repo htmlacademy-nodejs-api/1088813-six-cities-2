@@ -16,4 +16,5 @@ export interface SuggestionService extends DocumentExists {
   findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]>;
   incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null>;
   isAuthor(suggestionId: string, authorId: string): Promise<boolean>;
+  changeFavouriteStatus(id: string, userId: string, favourite: boolean): Promise<DocumentType<SuggestionEntity> | null>;
 }

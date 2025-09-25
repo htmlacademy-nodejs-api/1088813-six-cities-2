@@ -15,7 +15,7 @@ tags:
   - name: users
     description: Действия с пользователем.
 paths:
-  /users/register:
+  /user/register:
     post:
       tags:
         - users
@@ -41,7 +41,7 @@ paths:
         "409":
           description: Пользователь с таким email уже существует
 
-  /users/login:
+  /user/login:
     get:
       tags:
         - users
@@ -67,28 +67,7 @@ paths:
         "404":
           description: Пользователь с таким email не зарегистрирован
 
-  /users/logout:
-    get:
-      tags:
-        - users
-      summary: Выход из учетной записи
-      description: Обеспечивает выход из учетной записи
-
-      responses:
-        "200":
-          description: Пользователь не авторизован. Булево значение
-          content:
-            application/json:
-              schema:
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-
-        "404":
-          description: Пользователь с таким email не зарегистрирован
-
-  /users/{userId}/avatar:
+  /user/{userId}/avatar:
     post:
       tags:
         - users
@@ -122,6 +101,41 @@ paths:
 
         "404":
           description: Пользователь не найден
+
+  /user/update/{userId}:
+    put:
+      tags:
+        - users
+      summary: Обновить данные по пользователю
+      description: Обновляет данные по пользователю
+
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+
+      requestBody:
+        description: Данные для изменения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateUser'
+
+      responses:
+        "200":
+          description: Аватар изменен. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updateUser'
+
+        "404":
+          description: Пользователь не найден
+
 
   /suggestions/createSuggestion:
     post:
@@ -334,21 +348,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/getComments'
 
-  /comments/{suggestionId}/addComment:
+  /comments/addComment:
     post:
       tags:
         - comments
       summary: Добавление комментария для предложения.
       description: Добавляет комментарий для предложения.
-
-      parameters:
-        - name: suggestionId
-          in: path
-          required: true
-          description: ID предложения
-          schema:
-            type: string
-            example: 6329c3d6a04ab1061c6425ea
 
       requestBody:
         description: Данные для создания комментария
@@ -384,6 +389,23 @@ components:
         password:
           type: string
           example: 123456
+        type:
+          type: string
+          example: Обычный
+
+    updateUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: example@mail.ru
+        firstName:
+          type: string
+          example: Sergey
+        lastName:
+          type: string
+          example: Kuzmichev
         type:
           type: string
           example: Обычный
@@ -574,3 +596,9 @@ components:
         text:
           type: string
           example: comment content
+        suggestionId:
+          type: string
+          example: 3j2i223h23hu23h23u
+        rating:
+          type: number
+          example: 2

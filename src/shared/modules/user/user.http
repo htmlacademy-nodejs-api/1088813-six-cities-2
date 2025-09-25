@@ -1,16 +1,16 @@
 # Пользователи
 ## Получить пользователя по id
-GET http://localhost:3006/user/689a32d7e784e798712367bd
+GET http://localhost:3006/user/68d3fa2d46188620c43f5330
 Content-Type: application/json
 
 ###
 
 ## Регистрация нового пользователя
-POST http://localhost:3006/user
+POST http://localhost:3006/user/register
 Content-Type: application/json
 
 {
-  "email": "kuzMich1994039@mail.ru",
+  "email": "kuzMich19940310@mail.ru",
   "password": "123456",
   "firstName": "Kuz",
   "lastName": "Mich",
@@ -35,7 +35,7 @@ POST http://localhost:3006/user/login
 Content-Type: application/json
 
 {
-  "email": "kuzMich1994039@mail.ru",
+  "email": "kuzMich19940310@mail.ru",
   "password": "123456"
 }
 

@@ -10,10 +10,7 @@ import cors from 'cors';
 import {
   Controller,
   ExceptionFilter,
-  HttpErrorExceptionFilter,
-  ValidationExceptionFilter
 } from '../shared/libs/rest/index.js';
-import {AuthExceptionFilter} from '../shared/modules/auth/index.js';
 import {ParseTokenMiddleware} from '../shared/libs/rest/middleware/parse-token.middleware.js';
 import {StaticDirectories} from './rest.enum.js';
 
@@ -29,9 +26,9 @@ export class RestApplication {
     @inject(Component.UserController) private readonly userController: Controller,
     @inject(Component.SuggestionController) private readonly suggestionController: Controller,
     @inject(Component.CommentController) private readonly commentController: Controller,
-    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: AuthExceptionFilter,
-    @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: HttpErrorExceptionFilter,
-    @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: ValidationExceptionFilter,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
+    @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: ExceptionFilter,
+    @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }
@@ -75,7 +72,7 @@ export class RestApplication {
   }
 
   private async _initExceptionFilter() {
-    this.server.use(this.authExceptionFilter.catch.bind(this.appExceptionFilter));
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.validationExceptionFilter.catch.bind(this.validationExceptionFilter));
     this.server.use(this.httpExceptionFilter.catch.bind(this.httpExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
