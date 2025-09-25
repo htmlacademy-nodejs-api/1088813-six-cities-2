@@ -8,12 +8,16 @@ import {CreateSuggestionDto} from './dto/create-suggestion.dto.js';
 import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
 import {AGGREGATE_COMMENT, SuggestionSettings} from './suggestion.constant.js';
 import {Types} from 'mongoose';
+import {UserEntity} from '../user/index.js';
+import {fillDTO} from '../../helpers/index.js';
+import {SuggestionRdo} from './rdo/suggestion.rdo.js';
 
 @injectable()
 export class DefaultSuggestionService implements SuggestionService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.SuggestionModel) private readonly suggestionModel: types.ModelType<SuggestionEntity>,
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
   ) {}
 
   public async createSuggestion(createSuggestionDto: CreateSuggestionDto): Promise<DocumentType<SuggestionEntity>> {
@@ -131,5 +135,20 @@ export class DefaultSuggestionService implements SuggestionService {
     }
 
     return suggestion.authorId.toString() === authorId;
+  }
+
+  public async changeFavouriteStatus(id: string, userId: string, favourite: boolean): Promise<DocumentType<SuggestionEntity> | null> {
+    const suggestion = await this.suggestionModel.findById(id).orFail();
+    const user = await this.userModel.findById(userId).orFail();
+
+    if (favourite && !user.favouriteSuggestions.find((current) => current.id === id)) {
+      user.favouriteSuggestions.push(fillDTO(SuggestionRdo, suggestion));
+    } else {
+      user.favouriteSuggestions = user.favouriteSuggestions.filter((current) => current.id !== id);
+    }
+
+    user.save();
+
+    return suggestion;
   }
 }

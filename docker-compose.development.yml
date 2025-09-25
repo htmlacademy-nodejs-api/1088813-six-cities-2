@@ -13,7 +13,7 @@ services:
       - six-cities_data:/data/db
 
   db_ui:
-    image: mongo-express:latest
+    image: mongo-express:1.0.2-20
     restart: always
     container_name: six-cities_mongo_express
     ports:

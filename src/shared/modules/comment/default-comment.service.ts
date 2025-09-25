@@ -28,12 +28,6 @@ export class DefaultCommentService implements CommentService {
     return result[0];
   }
 
-  public async getAllComments(): Promise<DocumentType<CommentEntity>[]> {
-    return this.commentModel
-      .aggregate<types.DocumentType<CommentEntity>>(AGGREGATE_COMMENT)
-      .exec();
-  }
-
   public async getAllCommentsBySuggestionId(suggestionId: string, count = CommentSettings.MAX_COMMENTS_COUNT): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .aggregate<types.DocumentType<CommentEntity>>([

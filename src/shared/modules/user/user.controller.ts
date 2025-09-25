@@ -63,7 +63,7 @@ export class UserController extends BaseController {
       ],
     });
     this.addRoute({
-      path: '/',
+      path: '/register',
       method: HttpMethod.Post,
       handler: this.register,
       middlewares: [
@@ -119,6 +119,7 @@ export class UserController extends BaseController {
 
   public async login({body}: LoginUserRequest, res: Response): Promise<void> {
     const user = await this.authService.verify(body);
+    console.log(user);
     const token = await this.authService.authenticate(user);
     const responseData = fillDTO(LoggedUserRdo, {
       user,
