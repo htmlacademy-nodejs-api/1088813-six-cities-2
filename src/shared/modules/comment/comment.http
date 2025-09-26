@@ -12,12 +12,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwuc
 
 ###
 
-## Получить все комментарии
-GET http://localhost:3006/comments
-Content-Type: application/json
-
-###
-
 ## Получить все комментарии по id предложения
 GET http://localhost:3006/comments/68a1b5f0498bfb3cb3371160
 Content-Type: application/json

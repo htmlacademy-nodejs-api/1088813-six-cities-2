@@ -24,7 +24,7 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.suggestionService = new DefaultSuggestionService(this.logger, SuggestionModel);
+    this.suggestionService = new DefaultSuggestionService(this.logger, SuggestionModel, UserModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClicent = new MongoDatabaseClient(this.logger);
   }

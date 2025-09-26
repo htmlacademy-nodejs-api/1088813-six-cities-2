@@ -1,4 +1,6 @@
 import {Expose, Transform} from 'class-transformer';
+import {SuggestionEntity} from '../../suggestion/index.js';
+import {Types} from 'mongoose';
 
 export class UserRdo {
   @Expose({name: '_id'})
@@ -18,5 +20,6 @@ export class UserRdo {
   public avatar: string;
 
   @Expose()
-  public favouriteSuggestions: unknown[];
+  @Transform(({value}) => value?.map((suggestion: SuggestionEntity) => new Types.ObjectId(suggestion._id).toString()))
+  public favouriteSuggestions: string[];
 }

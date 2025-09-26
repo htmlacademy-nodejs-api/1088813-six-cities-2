@@ -2,7 +2,7 @@ import {User} from '../../types/index.js';
 import {defaultClasses, getModelForClass, modelOptions, prop} from '@typegoose/typegoose';
 import {createSHA256} from '../../helpers/index.js';
 import {UserType} from '../../enums/index.js';
-import {SuggestionRdo} from '../suggestion/rdo/suggestion.rdo.js';
+import {SuggestionEntity} from '../suggestion/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface UserEntity extends defaultClasses.Base {}
@@ -35,7 +35,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   public type?: UserType;
 
   @prop({ required: true, default: []})
-  public favouriteSuggestions: SuggestionRdo[];
+  public favouriteSuggestions: SuggestionEntity[];
 
   constructor(userData: User) {
     super();

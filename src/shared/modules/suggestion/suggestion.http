@@ -65,33 +65,27 @@ Content-Type: application/json
 
 ###
 
-## Получение сортированного по дате списка предложений
-GET http://localhost:3006/suggestions/findNew?count=10
-Content-Type: application/json
-
-###
-
 ## Получение избранных предложений
 GET http://localhost:3006/suggestions/favourite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0QG1haWwucnUiLCJmaXJzdE5hbWUiOiJLdXoiLCJsYXN0TmFtZSI6Ik1pY2giLCJpZCI6IjY4YTFhNWQzYzM0MzM5MmZjODI1ODY0YyIsImlhdCI6MTc1NjIyNDA5MywiZXhwIjoxNzU2MjI0NjkzfQ.akWkSXGOlJw_sJ2YopmUT9pkNmmkWYEpTWXtQC4t9I4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDMxMEBtYWlsLnJ1IiwiZmlyc3ROYW1lIjoiS3V6IiwibGFzdE5hbWUiOiJNaWNoIiwiaWQiOiI2OGQzZmEyZDQ2MTg4NjIwYzQzZjUzMzAiLCJpYXQiOjE3NTg4NzM1OTAsImV4cCI6MTc1ODg3NDE5MH0._E7lrOC_N6eLNDDrf3ndyvkvfdNuqFSFvBk5OHxCoGc
 
 
 ###
 
 ## Добавление/удаление предложения из избранного
-PATCH http://localhost:3006/suggestions/68d3c98c4db244e966615afa/favourite
+PATCH http://localhost:3006/suggestions/689a32d7e784e798712367c9/favourite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDMxMEBtYWlsLnJ1IiwiZmlyc3ROYW1lIjoiS3V6IiwibGFzdE5hbWUiOiJNaWNoIiwiaWQiOiI2OGQzZmEyZDQ2MTg4NjIwYzQzZjUzMzAiLCJpYXQiOjE3NTg3ODU1MjQsImV4cCI6MTc1ODc4NjEyNH0.7ZHnjROZnPQJt5VePds-Ivf5kr_cDOKLHiEwavFzQjM
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imt1ek1pY2gxOTk0MDMxMEBtYWlsLnJ1IiwiZmlyc3ROYW1lIjoiS3V6IiwibGFzdE5hbWUiOiJNaWNoIiwiaWQiOiI2OGQzZmEyZDQ2MTg4NjIwYzQzZjUzMzAiLCJpYXQiOjE3NTg4NzM1OTAsImV4cCI6MTc1ODg3NDE5MH0._E7lrOC_N6eLNDDrf3ndyvkvfdNuqFSFvBk5OHxCoGc
 
 {
-  "favourite": true
+  "favourite": false
 }
 
 ###
 
 ## Получение премиальных предложений
-GET http://localhost:3006/suggestions/premium
+GET http://localhost:3006/suggestions/premium?city=Казань
 Content-Type: application/json
 
 ###

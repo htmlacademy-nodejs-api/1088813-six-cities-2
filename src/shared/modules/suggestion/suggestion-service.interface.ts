@@ -11,8 +11,7 @@ export interface SuggestionService extends DocumentExists {
   updateById(id: string, dto: UpdateSuggestionDto): Promise<DocumentType<SuggestionEntity> | null>;
   deleteById(id: string): Promise<DocumentType<SuggestionEntity> | null>;
   exists(documentId: string): Promise<boolean>;
-  findNew(count: number): Promise<DocumentType<SuggestionEntity>[]>;
-  findPremium(): Promise<DocumentType<SuggestionEntity>[]>;
+  findPremium(city: string): Promise<DocumentType<SuggestionEntity>[]>;
   findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]>;
   incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null>;
   isAuthor(suggestionId: string, authorId: string): Promise<boolean>;

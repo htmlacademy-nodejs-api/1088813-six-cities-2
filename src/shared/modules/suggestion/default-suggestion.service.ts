@@ -9,8 +9,6 @@ import {UpdateSuggestionDto} from './dto/update-suggestion.dto.js';
 import {AGGREGATE_COMMENT, SuggestionSettings} from './suggestion.constant.js';
 import {Types} from 'mongoose';
 import {UserEntity} from '../user/index.js';
-import {fillDTO} from '../../helpers/index.js';
-import {SuggestionRdo} from './rdo/suggestion.rdo.js';
 
 @injectable()
 export class DefaultSuggestionService implements SuggestionService {
@@ -85,40 +83,46 @@ export class DefaultSuggestionService implements SuggestionService {
       .exec();
   }
 
-  public async findNew(count: number): Promise<DocumentType<SuggestionEntity>[]> {
+  public async findPremium(city: string): Promise<DocumentType<SuggestionEntity>[]> {
     return this.suggestionModel
       .aggregate<types.DocumentType<SuggestionEntity>>([
         ...AGGREGATE_COMMENT,
+        {
+          $match: { premium: true, city },
+        },
         {
           $sort: { createdAt: SortType.Down }
         },
         {
-          $limit: count,
-        }
-      ])
-      .exec();
-  }
-
-  public async findPremium(): Promise<DocumentType<SuggestionEntity>[]> {
-    return this.suggestionModel
-      .aggregate<types.DocumentType<SuggestionEntity>>([
-        ...AGGREGATE_COMMENT,
-        {
-          $match: { premium: true }
+          $limit: 3,
         }
       ])
       .exec();
   }
 
   public async findFavourite(userId: string): Promise<DocumentType<SuggestionEntity>[]> {
-    return this.suggestionModel
-      .aggregate<types.DocumentType<SuggestionEntity>>([
-        {
-          $match: { favourite: true, authorId: new Types.ObjectId(userId) },
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      return [];
+    }
+
+    const ids = user.favouriteSuggestions.map((favourite) => new Types.ObjectId(favourite.id));
+
+    const result = await this.suggestionModel.aggregate<DocumentType<SuggestionEntity>>([
+      {
+        $match: {
+          _id: {'$in': ids}
+        }
+      },
+      {
+        $addFields: {
+          'favourite': true,
         },
-        ...AGGREGATE_COMMENT
-      ])
-      .exec();
+      }
+    ]).exec();
+
+    return result;
   }
 
   public async incCommentCount(id: string): Promise<DocumentType<SuggestionEntity> | null> {
@@ -142,7 +146,8 @@ export class DefaultSuggestionService implements SuggestionService {
     const user = await this.userModel.findById(userId).orFail();
 
     if (favourite && !user.favouriteSuggestions.find((current) => current.id === id)) {
-      user.favouriteSuggestions.push(fillDTO(SuggestionRdo, suggestion));
+      suggestion.favourite = true;
+      user.favouriteSuggestions.push(suggestion);
     } else {
       user.favouriteSuggestions = user.favouriteSuggestions.filter((current) => current.id !== id);
     }

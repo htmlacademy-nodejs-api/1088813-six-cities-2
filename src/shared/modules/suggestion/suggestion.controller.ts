@@ -149,8 +149,9 @@ export class SuggestionController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async findPremium(_req: Request, res: Response): Promise<void> {
-    const result = await this.suggestionService.findPremium();
+  public async findPremium({query}: Request, res: Response): Promise<void> {
+    const {city} = query;
+    const result = await this.suggestionService.findPremium(String(city));
     const responseData = fillDTO(SuggestionRdo, result);
     this.ok(res, responseData);
   }
