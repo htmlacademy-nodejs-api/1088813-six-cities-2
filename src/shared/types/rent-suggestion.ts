@@ -2,7 +2,7 @@ import {ConvenienceType, SuggestionType} from '../enums/rent-suggestion.js';
 import {User} from './user.js';
 
 export type RentSuggestion = {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   publishedDate: Date;
